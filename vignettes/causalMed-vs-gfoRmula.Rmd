@@ -454,13 +454,32 @@ fit_dyn$estimate
 
 **gfoRmula** — user-supplied function passed as an argument:
 
-```r
+```{r}
 treat_if_L1_pos <- function(newdf, pool, intvar, intvals, time_name, t) {
-  newdf[, (intvar) := as.integer(newdf[[intvar]] > 0)]
+  newdf[, (intvar) := as.integer(L1 > 0)]
 }
 
 gfoRmula::gformula(
-  ...,
+obs_data     = copy(dat),
+  id           = "id",
+  time_name    = "time",
+  time_points  = length(unique(dat$time)),
+  covnames     = c("L1", "L2", "A"),
+  covtypes     = c("normal", "binary", "binary"),
+  basecovs     = "V",
+  covparams    = list(covmodels = c(
+    L1 ~ lag1_A + lag1_L1 + V + time,
+    L2 ~ lag1_A + lag1_L2 + V + time,
+    A  ~ lag1_A + L1 + L2 + V + time
+  )),
+  ymodel       = Y_bin ~ A + L1 + L2,
+  outcome_name = "Y_bin",
+  outcome_type = "binary_eof",
+  histories    = c(gfoRmula::lagged),
+  histvars     = list(c("A", "L1", "L2")),
+  nsimul       = 10000,
+  seed         = 20250915,
+  nsamples     = 0,
   intervention1.A = list(treat_if_L1_pos),
   int_descript    = "Treat if L1 > 0"
 )

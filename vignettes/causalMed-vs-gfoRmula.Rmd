@@ -382,12 +382,12 @@ fit_gf_s <- gfoRmula::gformula(
   id           = "id",
   time_name    = "time",
   time_points  = T_max,
-  covnames     = c("A", "L"),
-  covtypes     = c("binary", "normal"),
+  covnames     = c("L","A"),
+  covtypes     = c( "normal","binary"),
   basecovs     = "V",
   covparams    = list(covmodels = c(
-    A ~ V + lag1_A + lag1_L + L + time,
-    L ~ V + lag1_L + time
+    L ~ V + lag1_L + time,
+    A ~ V + lag1_A + lag1_L + L + time
   )),
   ymodel       = Y ~ lag1_A + A + L + lag1_L + time,
   outcome_name = "Y",
